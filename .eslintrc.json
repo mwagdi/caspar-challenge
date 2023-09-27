@@ -13,7 +13,8 @@
     "max-statements-per-line": ["error", { "max": 1 }],
     "no-multiple-empty-lines": "error",
     "multiline-ternary": ["error", "always"],
-    "no-console": "warn"
+    "no-console": "warn",
+    "max-len": ["error", { "code": 120 }]
   },
   "overrides": [
     {
