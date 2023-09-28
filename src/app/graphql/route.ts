@@ -1,14 +1,6 @@
 import { GraphQLError } from 'graphql/error';
 import { createSchema, createYoga } from 'graphql-yoga';
-import { Patient } from 'types';
-
-interface FetchPatientsArgs {
-    id?: number;
-    filter?: {
-        search?: string
-        age?: 'A' | 'B' | 'C'
-    }
-}
+import { FetchPatientsArgs, Patient } from 'types';
 
 const fetchPatients = async ({ id, filter }: FetchPatientsArgs) => {
     const response = await fetch('http://localhost:3001/patients');

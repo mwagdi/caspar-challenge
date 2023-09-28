@@ -1,0 +1,1 @@
+export { usePatientQuery } from './usePatientQuery/usePatientQuery';

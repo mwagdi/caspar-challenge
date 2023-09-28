@@ -7,3 +7,11 @@ export interface Patient {
     age: number;
     avatar: string;
 }
+
+export interface FetchPatientsArgs {
+    id?: number;
+    filter?: {
+        search?: string
+        age?: 'A' | 'B' | 'C'
+    }
+}
