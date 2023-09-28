@@ -1,0 +1,13 @@
+.patientListItem {
+  border: 4px solid dodgerblue;
+  display: block;
+  border-radius: 4px;
+  margin-bottom: 1.5em;
+  padding: 0.5em;
+  text-decoration: none;
+  color: #262b30;
+
+  &__name {
+    font-size: 1.25rem;
+  }
+}

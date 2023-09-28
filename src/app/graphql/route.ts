@@ -19,13 +19,13 @@ const fetchPatients = async ({ id, filter }: FetchPatientsArgs) => {
                     || item.last_name.toLowerCase().includes(search) || item.email.includes(search));
         }
         switch (age) {
-            case 'A':
+            case 'B':
                 searchResult = searchResult.filter((item: Patient) => item.age >= 18 && item.age <= 30);
                 break;
-            case 'B':
+            case 'C':
                 searchResult = searchResult.filter((item: Patient) => item.age >= 31 && item.age <= 45);
                 break;
-            case 'C':
+            case 'D':
                 searchResult = searchResult.filter((item: Patient) => item.age > 45);
                 break;
             default:
@@ -46,6 +46,7 @@ const schema = createSchema({
             A
             B
             C
+            D
         }
         
         input FilterInput {

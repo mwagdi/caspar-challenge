@@ -12,7 +12,7 @@ export interface FetchPatientsArgs {
     id?: number;
     filter?: {
         search?: string
-        age?: 'A' | 'B' | 'C'
+        age?: 'A' | 'B' | 'C' | 'D'
     }
 }
 
