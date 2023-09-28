@@ -15,3 +15,5 @@ export interface FetchPatientsArgs {
         age?: 'A' | 'B' | 'C'
     }
 }
+
+export type PatientListItemProps = Pick<Patient, 'patient_id' | 'first_name' | 'last_name'>;

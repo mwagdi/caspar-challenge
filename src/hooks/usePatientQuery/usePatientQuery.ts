@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { FetchPatientsArgs, Patient } from 'types';
 
 export const usePatientQuery = ({ id, filter }: FetchPatientsArgs) => {
-    const [data, setData] = useState<Patient|Patient[]|undefined>(undefined);
+    const [patients, setPatients] = useState<Patient[]|undefined>(undefined);
+    const [patient, setPatient] = useState<Patient|undefined>(undefined);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error|null>(null);
 
@@ -36,9 +37,10 @@ export const usePatientQuery = ({ id, filter }: FetchPatientsArgs) => {
                     },
                     body: JSON.stringify({ query, variables: { id,filter } })
                 });
-                const { data: { patient, patients } } = await response.json();
+                const { data: { patient: singlePatient, patients: patientList } } = await response.json();
 
-                setData(patient || patients);
+                setPatients(patientList);
+                setPatient(singlePatient);
                 setLoading(false);
             }
             catch (e) {
@@ -52,5 +54,5 @@ export const usePatientQuery = ({ id, filter }: FetchPatientsArgs) => {
         fetchData();
     }, [id, filter]);
 
-    return { data, loading, error };
+    return { patient, patients, loading, error };
 };
