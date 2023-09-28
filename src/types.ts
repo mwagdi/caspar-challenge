@@ -8,11 +8,13 @@ export interface Patient {
     avatar: string;
 }
 
+export type AgeOptions = 'A' | 'B' | 'C' | 'D'
+
 export interface FetchPatientsArgs {
     id?: number;
     filter?: {
         search?: string
-        age?: 'A' | 'B' | 'C' | 'D'
+        age?: AgeOptions
     }
 }
 
