@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FetchPatientsArgs, Patient } from 'types';
 
 export const usePatientQuery = ({ id, filter: { search, age } }: FetchPatientsArgs) => {
@@ -7,7 +7,10 @@ export const usePatientQuery = ({ id, filter: { search, age } }: FetchPatientsAr
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error|null>(null);
 
+    const searchRef = useRef(search);
+
     useEffect(() => {
+        let timeoutId;
         const fetchData = async () => {
             try {
                 const query = id ?
@@ -51,7 +54,21 @@ export const usePatientQuery = ({ id, filter: { search, age } }: FetchPatientsAr
             }
         };
 
-        fetchData();
+        if(search !== searchRef.current) {
+            searchRef.current = search;
+            timeoutId = setTimeout(() => {
+                fetchData();
+            }, 500);
+        }
+        else {
+            fetchData();
+        }
+
+        return () => {
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
+        };
     }, [id, search, age]);
 
     return { patient, patients, loading, error };
