@@ -1,11 +1,33 @@
+import { usePatientQuery } from 'hooks';
 import { useRouter } from 'next/router';
 
-const PatientDetails = () => {
+const PatientDetails = (): JSX.Element | null => {
     const router = useRouter();
+    const id = typeof router.query.id === 'string'
+        ? parseInt(router.query.id)
+        : undefined;
+
+    const {
+        patient, loading, error
+    } = usePatientQuery({ id });
+
+    if(!patient) return null;
+
+    const { patient_id, first_name, last_name, age, gender, email, avatar } = patient;
+
     return (
         <>
             <button onClick={() => router.back()}>Back</button>
-            <p>{router.query.id}</p>
+            <div>
+                <p>ID: {patient_id}</p>
+                <h1>{last_name}, {first_name}</h1>
+                <div>
+                    <img src={avatar} alt="avatar"/>
+                    <p>Age: {age}</p>
+                    <p>Sex: {gender}</p>
+                    <p>Email: {email}</p>
+                </div>
+            </div>
         </>
     );
 };

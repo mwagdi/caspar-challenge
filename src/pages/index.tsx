@@ -1,27 +1,27 @@
-import { ChangeEvent, useContext, useState } from 'react';
-import { FilterContext } from 'contexts';
-import { usePatientQuery } from 'hooks';
-import { getSortedPatients } from 'utils';
+import { ChangeEvent, useContext } from 'react';
+import { PatientsContext } from 'contexts';
+import { Patient } from 'types';
+import { sortPatients } from 'utils';
 
 import { PatientList } from 'components';
 
 const Home = () => {
-    const { filter, setFilter } = useContext(FilterContext);
-    const { patients, loading, error } = usePatientQuery({ filter });
-
-    const [sorted, setSorted] = useState(false);
-
+    const { filter, setFilter, patients, setPatients, loading, error } = useContext(PatientsContext);
     const { search, age, sex } = filter;
 
     const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        setFilter({
-            ...filter,
-            [event.target.name]: event.target.value
-        });
+        if (setFilter) {
+            setFilter({
+                ...filter,
+                [event.target.name]: event.target.value
+            });
+        }
     };
 
     const handleClick = () => {
-        setSorted(true);
+        if (setPatients) {
+            setPatients(sortPatients(patients as Patient[]));
+        }
     };
 
     return (
@@ -40,7 +40,7 @@ const Home = () => {
                 <option value="FEMALE">Female</option>
             </select>
             <button onClick={handleClick}>Sort Alphabetically</button>
-            <PatientList patients={getSortedPatients(patients, sorted)} />
+            <PatientList patients={patients} />
         </>
     );
 };

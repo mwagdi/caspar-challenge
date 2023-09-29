@@ -1,14 +1,35 @@
-import { useEffect, useRef, useState } from 'react';
-import { FetchPatientsArgs, FilterType, Patient } from 'types';
+import { createContext, FC, ReactNode, useEffect, useRef, useState } from 'react';
+import { usePatientQuery } from 'hooks';
+import { FilterType, Patient } from 'types';
 
-type UsePatientQueryType = {
-    id?: number
-    filter?: FilterType
+interface PatientsContextType {
+    filter: FilterType;
+    setFilter?: (value: FilterType) => void;
+    patients?: Patient[];
+    setPatients?: (patients: Patient[]) => void;
+    patient?: undefined;
+    loading: boolean;
+    error: Error | null;
 }
 
-export const usePatientQuery = ({ id, filter }: UsePatientQueryType) => {
+export const PatientsContext = createContext<PatientsContextType>({
+    filter: {
+        search: '',
+        age: 'A',
+        sex: 'ALL'
+    },
+    patients: [],
+    loading: true,
+    error: null
+});
+
+export const PatientsProvider: FC<{children: ReactNode}> = ({ children }) => {
+    const [filter, setFilter] = useState<FilterType>({
+        search: '',
+        age: 'A',
+        sex: 'ALL'
+    });
     const [patients, setPatients] = useState<Patient[]|undefined>(undefined);
-    const [patient, setPatient] = useState<Patient|undefined>(undefined);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error|null>(null);
 
@@ -18,18 +39,7 @@ export const usePatientQuery = ({ id, filter }: UsePatientQueryType) => {
         let timeoutId: ReturnType<typeof setTimeout>;
         const fetchData = async () => {
             try {
-                const query = id ?
-                    `query GetPatient($id: Int!) {
-                        patient(id: $id) {
-                            patient_id
-                            first_name
-                            last_name
-                            email
-                            gender
-                            age
-                            avatar
-                        }
-                    }` :
+                const query =
                     `query GetPatients($filter: FilterInput) {
                         patients(filter: $filter) {
                             patient_id
@@ -43,12 +53,11 @@ export const usePatientQuery = ({ id, filter }: UsePatientQueryType) => {
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ query, variables: { id, filter } })
+                    body: JSON.stringify({ query, variables: { filter } })
                 });
                 const { data: { patient: singlePatient, patients: patientList } } = await response.json();
 
                 setPatients(patientList);
-                setPatient(singlePatient);
                 setLoading(false);
             }
             catch (e) {
@@ -74,7 +83,19 @@ export const usePatientQuery = ({ id, filter }: UsePatientQueryType) => {
                 clearTimeout(timeoutId);
             }
         };
-    }, [id, filter]);
+    }, [filter]);
+    // const { patients, patient, loading, error } = usePatientQuery({ filter });
 
-    return { patient, patients, loading, error };
+    const contextValue = {
+        filter,
+        setFilter,
+        patients,
+        setPatients,
+        loading,
+        error
+    };
+
+    return (
+        <PatientsContext.Provider value={contextValue}>{children}</PatientsContext.Provider>
+    );
 };

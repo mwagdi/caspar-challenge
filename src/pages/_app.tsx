@@ -1,14 +1,14 @@
-import { FilterProvider } from 'contexts';
+import { PatientsProvider } from 'contexts';
 import { AppProps } from 'next/app';
 
 import './global.scss';
 
 export default function App({ Component, pageProps }: AppProps) {
     return (
-        <FilterProvider>
+        <PatientsProvider>
             <main>
                 <Component {...pageProps} />
             </main>
-        </FilterProvider>
+        </PatientsProvider>
     );
 }

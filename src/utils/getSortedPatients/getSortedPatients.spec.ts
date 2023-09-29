@@ -1,4 +1,4 @@
-import { getSortedPatients } from './getSortedPatients';
+import { sortPatients } from './sortPatients';
 
 describe('getSortedPatients', () => {
     it('should return the same array when shouldSort is false', () => {
@@ -8,7 +8,7 @@ describe('getSortedPatients', () => {
             { last_name: 'Johnson' }
         ];
 
-        const sortedPatients = getSortedPatients(patients, false);
+        const sortedPatients = sortPatients(patients, false);
 
         expect(sortedPatients).toEqual(patients);
     });
@@ -20,7 +20,7 @@ describe('getSortedPatients', () => {
             { last_name: 'Johnson' }
         ];
 
-        const sortedPatients = getSortedPatients(unsortedPatients, true);
+        const sortedPatients = sortPatients(unsortedPatients, true);
 
         expect(sortedPatients).toEqual([
             { last_name: 'Doe' },
@@ -32,7 +32,7 @@ describe('getSortedPatients', () => {
     it('should handle empty patient array', () => {
         const emptyPatients = [];
 
-        const sortedPatients = getSortedPatients(emptyPatients, true);
+        const sortedPatients = sortPatients(emptyPatients, true);
 
         expect(sortedPatients).toEqual([]);
     });
@@ -40,7 +40,7 @@ describe('getSortedPatients', () => {
     it('should handle a single patient', () => {
         const singlePatient = [{ last_name: 'Doe' }];
 
-        const sortedPatients = getSortedPatients(singlePatient, true);
+        const sortedPatients = sortPatients(singlePatient, true);
 
         expect(sortedPatients).toEqual(singlePatient);
     });

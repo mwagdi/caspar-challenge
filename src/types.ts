@@ -20,7 +20,7 @@ export type FilterType = {
 
 export interface FetchPatientsArgs {
     id?: number;
-    filter?: FilterType
+    filter: FilterType
 }
 
 export type PatientListItemProps = Pick<Patient, 'patient_id' | 'first_name' | 'last_name'>;
