@@ -1,1 +1,1 @@
-export { sortPatients } from './getSortedPatients/sortPatients';
+export { sortPatients } from './sortPatients/sortPatients';
