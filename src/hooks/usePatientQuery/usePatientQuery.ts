@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { FetchPatientsArgs, FilterType, Patient } from 'types';
+import { Patient } from 'types';
 
 export const usePatientQuery = ({ id }: { id?: number }) => {
     const [patient, setPatient] = useState<Patient|undefined>(undefined);
