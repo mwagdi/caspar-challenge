@@ -1,4 +1,4 @@
-import { Patient } from 'types'; // Import the function to be tested
+import { Patient } from 'types';
 
 import { sortPatients } from './sortPatients';
 

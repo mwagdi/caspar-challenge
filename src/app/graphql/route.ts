@@ -55,6 +55,10 @@ const schema = createSchema({
             patient(id: Int!): Patient!
         }
         
+        type Mutation {
+            deletePatient(id: Int!): [Patient!]
+        }
+        
         enum AgeRange {
             A
             B
@@ -98,6 +102,19 @@ const schema = createSchema({
                     const patient = await fetchPatients({ id });
 
                     if (patient) return patient;
+                    return new GraphQLError('Patient not found');
+                } catch (e) {
+                    return new GraphQLError('An error has occurred');
+                }
+            }
+        },
+        Mutation: {
+            deletePatient: async (_, { id }) => {
+                try {
+                    const patients: Patient[] = await fetchPatients({});
+                    if(patients.some(({ patient_id }) => patient_id === id)) {
+                        return patients.filter(({ patient_id }) => patient_id !== id);
+                    }
                     return new GraphQLError('Patient not found');
                 } catch (e) {
                     return new GraphQLError('An error has occurred');

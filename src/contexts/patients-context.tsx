@@ -84,7 +84,6 @@ export const PatientsProvider: FC<{children: ReactNode}> = ({ children }) => {
             }
         };
     }, [filter]);
-    // const { patients, patient, loading, error } = usePatientQuery({ filter });
 
     const contextValue = {
         filter,
