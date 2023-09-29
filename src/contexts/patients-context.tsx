@@ -1,5 +1,4 @@
 import { createContext, FC, ReactNode, useEffect, useRef, useState } from 'react';
-import { usePatientQuery } from 'hooks';
 import { FilterType, Patient } from 'types';
 
 interface PatientsContextType {
@@ -7,7 +6,7 @@ interface PatientsContextType {
     setFilter?: (value: FilterType) => void;
     patients?: Patient[];
     setPatients?: (patients: Patient[]) => void;
-    patient?: undefined;
+    deletePatient?: (id: number) => void;
     loading: boolean;
     error: Error | null;
 }
@@ -55,7 +54,7 @@ export const PatientsProvider: FC<{children: ReactNode}> = ({ children }) => {
                     },
                     body: JSON.stringify({ query, variables: { filter } })
                 });
-                const { data: { patient: singlePatient, patients: patientList } } = await response.json();
+                const { data: { patients: patientList } } = await response.json();
 
                 setPatients(patientList);
                 setLoading(false);
@@ -85,11 +84,41 @@ export const PatientsProvider: FC<{children: ReactNode}> = ({ children }) => {
         };
     }, [filter]);
 
+    const deletePatient = async (id: number) => {
+        setLoading(true);
+        try {
+            const query =
+                `mutation deletePatient($id: Int!) {
+                        deletePatient(id: $id) {
+                            patient_id
+                            first_name
+                            last_name
+                        }
+                    }`;
+
+            const response = await fetch('/graphql', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ query, variables: { id } })
+            });
+            const { data: { deletePatient: newPatientList } } = await response.json();
+            setPatients(newPatientList);
+        } catch (e) {
+            if(e instanceof Error) {
+                setError(e);
+            }
+            setLoading(false);
+        }
+    };
+
     const contextValue = {
         filter,
         setFilter,
         patients,
         setPatients,
+        deletePatient,
         loading,
         error
     };

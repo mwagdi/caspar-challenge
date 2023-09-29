@@ -1,24 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { FetchPatientsArgs, FilterType, Patient } from 'types';
 
-type UsePatientQueryType = {
-    id?: number
-    filter?: FilterType
-}
-
-export const usePatientQuery = ({ id, filter }: UsePatientQueryType) => {
-    const [patients, setPatients] = useState<Patient[]|undefined>(undefined);
+export const usePatientQuery = ({ id }: { id?: number }) => {
     const [patient, setPatient] = useState<Patient|undefined>(undefined);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error|null>(null);
 
-    const searchRef = useRef(filter?.search);
-
     useEffect(() => {
-        let timeoutId: ReturnType<typeof setTimeout>;
         const fetchData = async () => {
             try {
-                const query = id ?
+                const query =
                     `query GetPatient($id: Int!) {
                         patient(id: $id) {
                             patient_id
@@ -29,13 +20,6 @@ export const usePatientQuery = ({ id, filter }: UsePatientQueryType) => {
                             age
                             avatar
                         }
-                    }` :
-                    `query GetPatients($filter: FilterInput) {
-                        patients(filter: $filter) {
-                            patient_id
-                            first_name
-                            last_name
-                        }
                     }`;
 
                 const response = await fetch('/graphql', {
@@ -43,11 +27,10 @@ export const usePatientQuery = ({ id, filter }: UsePatientQueryType) => {
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ query, variables: { id, filter } })
+                    body: JSON.stringify({ query, variables: { id } })
                 });
-                const { data: { patient: singlePatient, patients: patientList } } = await response.json();
+                const { data: { patient: singlePatient } } = await response.json();
 
-                setPatients(patientList);
                 setPatient(singlePatient);
                 setLoading(false);
             }
@@ -59,22 +42,8 @@ export const usePatientQuery = ({ id, filter }: UsePatientQueryType) => {
             }
         };
 
-        if(filter?.search !== searchRef.current) {
-            searchRef.current = filter?.search;
-            timeoutId = setTimeout(() => {
-                fetchData();
-            }, 500);
-        }
-        else {
-            fetchData();
-        }
+        fetchData();
+    }, [id]);
 
-        return () => {
-            if (timeoutId) {
-                clearTimeout(timeoutId);
-            }
-        };
-    }, [id, filter]);
-
-    return { patient, patients, loading, error };
+    return { patient, loading, error };
 };
