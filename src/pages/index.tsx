@@ -1,12 +1,15 @@
-import { ChangeEvent, useContext } from 'react';
+import { ChangeEvent, useContext, useState } from 'react';
 import { FilterContext } from 'contexts';
 import { usePatientQuery } from 'hooks';
+import { getSortedPatients } from 'utils';
 
 import { PatientList } from 'components';
 
 const Home = () => {
     const { filter, setFilter } = useContext(FilterContext);
     const { patients, loading, error } = usePatientQuery({ filter });
+
+    const [sorted, setSorted] = useState(false);
 
     const { search, age, sex } = filter;
 
@@ -15,8 +18,10 @@ const Home = () => {
             ...filter,
             [event.target.name]: event.target.value
         });
+    };
 
-
+    const handleClick = () => {
+        setSorted(true);
     };
 
     return (
@@ -34,7 +39,8 @@ const Home = () => {
                 <option value="MALE">Male</option>
                 <option value="FEMALE">Female</option>
             </select>
-            <PatientList patients={patients} />
+            <button onClick={handleClick}>Sort Alphabetically</button>
+            <PatientList patients={getSortedPatients(patients, sorted)} />
         </>
     );
 };

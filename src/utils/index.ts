@@ -1,0 +1,1 @@
+export { getSortedPatients } from './getSortedPatients/getSortedPatients';

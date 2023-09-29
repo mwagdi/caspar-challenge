@@ -25,7 +25,8 @@
       "components": ["./src/components/index.ts"],
       "types": ["./src/types.ts"],
       "hooks": ["./src/hooks/index.ts"],
-      "contexts": ["./src/contexts/index.ts"]
+      "contexts": ["./src/contexts/index.ts"],
+      "utils": ["./src/utils/index.ts"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
