@@ -1,27 +1,29 @@
 import { createContext, FC, ReactNode, useState } from 'react';
-import { AgeOptions } from 'types';
+import { AgeOptions, FilterType, SexOptions } from 'types';
 
 interface FilterContextType {
-    search?: string;
-    age: AgeOptions;
-    setSearch?: (value: string) => void;
-    setAge?: (value: AgeOptions) => void;
+    filter?: FilterType;
+    setFilter?: (value: FilterType) => void;
 }
 
 export const FilterContext = createContext<FilterContextType>({
-    search: '',
-    age: 'A'
+    filter: {
+        search: '',
+        age: 'A',
+        sex: 'ALL'
+    }
 });
 
 export const FilterProvider: FC<{children: ReactNode}> = ({ children }) => {
-    const [search, setSearch] = useState<string | undefined>('');
-    const [age, setAge] = useState<AgeOptions>('A');
+    const [filter, setFilter] = useState<FilterType>({
+        search: '',
+        age: 'A',
+        sex: 'ALL'
+    });
 
     const contextValue = {
-        search,
-        age,
-        setSearch,
-        setAge
+        filter,
+        setFilter
     };
 
     return (

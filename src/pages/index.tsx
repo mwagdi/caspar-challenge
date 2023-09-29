@@ -1,28 +1,22 @@
-import { ChangeEvent, useContext, useState } from 'react';
+import { ChangeEvent, useContext } from 'react';
 import { FilterContext } from 'contexts';
 import { usePatientQuery } from 'hooks';
-import { AgeOptions } from 'types';
 
 import { PatientList } from 'components';
 
 const Home = () => {
-    const { search, setSearch, age, setAge } = useContext(FilterContext);
-    // const [search, setSearch] = useState<string | undefined>('');
-    // const [age, setAge] = useState<'A' | 'B' | 'C' | 'D'>('A');
-    console.log({ search, age });
-    const { patients, loading, error } = usePatientQuery({ filter: { search, age } });
+    const { filter, setFilter } = useContext(FilterContext);
+    const { patients, loading, error } = usePatientQuery({ filter });
+
+    const { search, age, sex } = filter;
 
     const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        if(event.target.name === 'age') {
-            if (setAge) {
-                setAge(event.target.value as AgeOptions);
-            }
-        }
-        else {
-            if (setSearch) {
-                setSearch(event.target.value);
-            }
-        }
+        setFilter({
+            ...filter,
+            [event.target.name]: event.target.value
+        });
+
+
     };
 
     return (
@@ -34,6 +28,11 @@ const Home = () => {
                 <option value="B">18 - 30</option>
                 <option value="C">31 - 45</option>
                 <option value="D">&gt; 45</option>
+            </select>
+            <select onChange={handleChange} value={sex} name="sex" id="sex">
+                <option value="ALL">Select Sex</option>
+                <option value="MALE">Male</option>
+                <option value="FEMALE">Female</option>
             </select>
             <PatientList patients={patients} />
         </>

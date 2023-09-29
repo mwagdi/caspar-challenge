@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { FetchPatientsArgs, Patient } from 'types';
 
-export const usePatientQuery = ({ id, filter: { search, age } }: FetchPatientsArgs) => {
+export const usePatientQuery = ({ id, filter }: FetchPatientsArgs) => {
     const [patients, setPatients] = useState<Patient[]|undefined>(undefined);
     const [patient, setPatient] = useState<Patient|undefined>(undefined);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error|null>(null);
 
-    const searchRef = useRef(search);
+    const searchRef = useRef(filter?.search);
 
     useEffect(() => {
         let timeoutId;
@@ -38,7 +38,7 @@ export const usePatientQuery = ({ id, filter: { search, age } }: FetchPatientsAr
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ query, variables: { id, filter: { search, age } } })
+                    body: JSON.stringify({ query, variables: { id, filter } })
                 });
                 const { data: { patient: singlePatient, patients: patientList } } = await response.json();
 
@@ -54,7 +54,7 @@ export const usePatientQuery = ({ id, filter: { search, age } }: FetchPatientsAr
             }
         };
 
-        if(search !== searchRef.current) {
+        if(filter?.search !== searchRef.current) {
             searchRef.current = search;
             timeoutId = setTimeout(() => {
                 fetchData();
@@ -69,7 +69,7 @@ export const usePatientQuery = ({ id, filter: { search, age } }: FetchPatientsAr
                 clearTimeout(timeoutId);
             }
         };
-    }, [id, search, age]);
+    }, [id, filter]);
 
     return { patient, patients, loading, error };
 };

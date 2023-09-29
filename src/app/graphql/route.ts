@@ -10,7 +10,8 @@ const fetchPatients = async ({ id, filter }: FetchPatientsArgs) => {
 
     let searchResult = responseJson;
     if (filter) {
-        const { search, age } = filter;
+        const { search, age, sex } = filter;
+
         if (search) {
             searchResult = responseJson
                 .filter((item: Patient) =>
@@ -18,6 +19,7 @@ const fetchPatients = async ({ id, filter }: FetchPatientsArgs) => {
                     || item.first_name.toLowerCase().includes(search)
                     || item.last_name.toLowerCase().includes(search) || item.email.includes(search));
         }
+
         switch (age) {
             case 'B':
                 searchResult = searchResult.filter((item: Patient) => item.age >= 18 && item.age <= 30);
@@ -27,6 +29,17 @@ const fetchPatients = async ({ id, filter }: FetchPatientsArgs) => {
                 break;
             case 'D':
                 searchResult = searchResult.filter((item: Patient) => item.age > 45);
+                break;
+            default:
+                break;
+        }
+
+        switch (sex) {
+            case 'MALE':
+                searchResult = searchResult.filter((item: Patient) => item.gender === 'Male');
+                break;
+            case 'FEMALE':
+                searchResult = searchResult.filter((item: Patient) => item.gender === 'Female');
                 break;
             default:
                 break;
@@ -49,9 +62,16 @@ const schema = createSchema({
             D
         }
         
+        enum Sex {
+            ALL
+            MALE
+            FEMALE
+        }
+        
         input FilterInput {
             search: String
             age: AgeRange
+            sex: Sex
         }
         
         type Patient {
